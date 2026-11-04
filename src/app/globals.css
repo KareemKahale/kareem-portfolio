@@ -3,25 +3,90 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-obsidian: #070b10;
+  --text-primary: #f7fbfa;
+  --text-secondary: #c2d6d2;
+  --accent-pastel: #9ee6d0;
+  --accent-warm: #76c7b0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
+html,
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-obsidian);
+  color: var(--text-primary);
+  font-family: var(--font-jakarta), -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* إجبار المتصفح على اعتماد اللون الهادئ الجديد (#9EE6D0) ومنع أي كاش قديم */
+.text-accent {
+  color: #9ee6d0 !important;
+}
+
+.bg-accent {
+  background-color: #9ee6d0 !important;
+}
+
+.bg-accent\/15 {
+  background-color: rgba(158, 230, 208, 0.15) !important;
+}
+
+.bg-accent\/20 {
+  background-color: rgba(158, 230, 208, 0.2) !important;
+}
+
+.border-accent {
+  border-color: #9ee6d0 !important;
+}
+
+a,
+button,
+[role="button"],
+[role="radio"],
+[role="tab"] {
+  cursor: pointer;
+}
+
+.custom-scrollbar {
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .glass-panel {
+    background: rgba(15, 25, 34, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .glass-panel-interactive {
+    background: rgba(15, 25, 34, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .glass-panel-interactive:hover {
+    background: rgba(22, 36, 48, 0.68);
+    box-shadow: 0 20px 45px -15px rgba(158, 230, 208, 0.16);
+  }
+
+  .perspective-stage {
+    perspective: 1200px;
   }
 }

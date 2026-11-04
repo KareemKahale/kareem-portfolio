@@ -1,101 +1,86 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useCallback, useState } from "react";
+import { BinaryOrbits } from "@/components/canvas/AmbientBackground";
+import { CustomCursor } from "@/components/canvas/CustomCursor";
+import { HudNavbar } from "@/components/hud/HudNavbar";
+import { ZAxisStage } from "@/components/engine/ZAxisStage";
+import { HeroScene } from "@/components/scenes/HeroScene";
+import { PhilosophyScene } from "@/components/scenes/PhilosophyScene";
+import { WorksScene } from "@/components/scenes/WorksScene";
+import { ArchitectureScene } from "@/components/scenes/ArchitectureScene";
+import { ContactScene } from "@/components/scenes/ContactScene";
+import { ProjectModal } from "@/components/ui/ProjectModal";
+import { PORTFOLIO_SCENES } from "@/data/profile";
+import { ProjectItem } from "@/types/portfolio";
+
+export default function HomePage() {
+  const [activeScene, setActiveScene] = useState<number>(0);
+  const [depthProgress, setDepthProgress] = useState<number>(0);
+  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(
+    null
+  );
+
+  const handleSelectScene = useCallback((index: number) => {
+    const clamped = Math.max(0, Math.min(PORTFOLIO_SCENES.length - 1, index));
+    setActiveScene(clamped);
+  }, []);
+
+  const handleStepScene = useCallback((direction: 1 | -1) => {
+    setActiveScene((prev) =>
+      Math.max(0, Math.min(PORTFOLIO_SCENES.length - 1, prev + direction))
+    );
+  }, []);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main className="relative h-screen w-screen overflow-hidden bg-obsidian select-none">
+      {/* 1. الخلفية المدارية الناعمة بألوان الباستيل */}
+      <BinaryOrbits depthProgress={depthProgress} />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      {/* 2. مؤشر الماوس الناعم */}
+      <CustomCursor />
+
+      {/* 3. الهيدر العلوي بـ JellyRadio والقائمة الجانبية بـ LineSidebar */}
+      <HudNavbar
+        activeIndex={activeScene}
+        depthProgress={depthProgress}
+        onSelectScene={handleSelectScene}
+        onStepScene={handleStepScene}
+      />
+
+      {/* 4. محرك المشاهد الخمسة في المحور Z (فضاء مفتوح بلا إطارات) */}
+      <ZAxisStage
+        activeIndex={activeScene}
+        totalScenes={PORTFOLIO_SCENES.length}
+        isLocked={Boolean(selectedProject)}
+        onChangeScene={handleSelectScene}
+        onDepthUpdate={setDepthProgress}
+      >
+        {/* المشهد 1: البوابة الرئيسية */}
+        <HeroScene onNavigateScene={handleSelectScene} />
+
+        {/* المشهد 2: فلسفة التخصص المزدوج */}
+        <PhilosophyScene onNavigateScene={handleSelectScene} />
+
+        {/* المشهد 3: معرض الأعمال المصنف */}
+        <WorksScene
+          onSelectProject={setSelectedProject}
+          onNavigateScene={handleSelectScene}
+        />
+
+        {/* المشهد 4: المحاكي التفاعلي لمعمارية Car Rental API */}
+        <ArchitectureScene />
+
+        {/* المشهد 5: بوابة التواصل المباشر وملف التصميم */}
+        <ContactScene />
+      </ZAxisStage>
+
+      {/* 5. النافذة الزجاجية الناعمة لتفاصيل المشروع */}
+      <ProjectModal
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+        onInspectArchitecture={() => handleSelectScene(3)}
+      />
+    </main>
   );
 }
